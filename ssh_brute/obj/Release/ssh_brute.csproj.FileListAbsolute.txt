@@ -1,0 +1,13 @@
+C:\Users\Jazis\source\repos\ssh_brute\ssh_brute\bin\Release\ssh_brute.exe.config
+C:\Users\Jazis\source\repos\ssh_brute\ssh_brute\bin\Release\ssh_brute.exe
+C:\Users\Jazis\source\repos\ssh_brute\ssh_brute\bin\Release\ssh_brute.pdb
+C:\Users\Jazis\source\repos\ssh_brute\ssh_brute\bin\Release\Renci.SshNet.dll
+C:\Users\Jazis\source\repos\ssh_brute\ssh_brute\bin\Release\Renci.SshNet.xml
+C:\Users\Jazis\source\repos\ssh_brute\ssh_brute\obj\Release\ssh_brute.csprojAssemblyReference.cache
+C:\Users\Jazis\source\repos\ssh_brute\ssh_brute\obj\Release\ssh_brute.Form1.resources
+C:\Users\Jazis\source\repos\ssh_brute\ssh_brute\obj\Release\ssh_brute.Properties.Resources.resources
+C:\Users\Jazis\source\repos\ssh_brute\ssh_brute\obj\Release\ssh_brute.csproj.GenerateResource.cache
+C:\Users\Jazis\source\repos\ssh_brute\ssh_brute\obj\Release\ssh_brute.csproj.CoreCompileInputs.cache
+C:\Users\Jazis\source\repos\ssh_brute\ssh_brute\obj\Release\ssh_brute.csproj.CopyComplete
+C:\Users\Jazis\source\repos\ssh_brute\ssh_brute\obj\Release\ssh_brute.exe
+C:\Users\Jazis\source\repos\ssh_brute\ssh_brute\obj\Release\ssh_brute.pdb
