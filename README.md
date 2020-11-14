@@ -8,7 +8,7 @@
 [Ready program download](https://github.com/Jazis/ssh_brute/raw/master/Release.zip)
 
 
-![alt text](https://i.imgur.com/gZSz9Py.png)
+![alt text](https://i.imgur.com/PiZDlsi.png)
 
 
 update 14.11.20
