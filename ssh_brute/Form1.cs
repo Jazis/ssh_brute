@@ -82,14 +82,30 @@ namespace ssh_brute
                 {
                     for (int k = 0; k < passwds_lines.Length; k++)
                     {
-                        string combo = ips_lines[i] + "|" + logins_lines[j] + ":" + passwds_lines[k];
-                        using (StreamWriter sw = File.AppendText("out.txt"))
+                        if (ips_lines[i].Contains(':'))
                         {
-                            sw.WriteLine(combo);
-                            counter++;
-                            if (counter % 10000 == 0)
+                            string combo = ips_lines[i] + "|" + logins_lines[j] + ":" + passwds_lines[k];
+                            using (StreamWriter sw = File.AppendText("out.txt"))
                             {
-                                listBox1.Invoke((MethodInvoker)(() => listBox1.Items.Add($"Combos -> {counter}")));
+                                sw.WriteLine(combo);
+                                counter++;
+                                if (counter % 10000 == 0)
+                                {
+                                    listBox1.Invoke((MethodInvoker)(() => listBox1.Items.Add($"Combos -> {counter}")));
+                                }
+                            }
+                        }
+                        else
+                        {
+                            string combo = ips_lines[i] + ":22|" + logins_lines[j] + ":" + passwds_lines[k];
+                            using (StreamWriter sw = File.AppendText("out.txt"))
+                            {
+                                sw.WriteLine(combo);
+                                counter++;
+                                if (counter % 10000 == 0)
+                                {
+                                    listBox1.Invoke((MethodInvoker)(() => listBox1.Items.Add($"Combos -> {counter}")));
+                                }
                             }
                         }
                     }
