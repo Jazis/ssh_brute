@@ -15,4 +15,4 @@ update 14.11.20
 - Error log 
 	string error - string format error
 - сhecking for a port
-
+- manually threads setting

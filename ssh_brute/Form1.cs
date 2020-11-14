@@ -198,7 +198,7 @@ namespace ssh_brute
                         while (true)
                         {
                             label6.Invoke((MethodInvoker)(() => label6.Text = $"Active threads: {threads.Count}"));
-                            if (threads.Count >= 1000) { Thread.Sleep(10); }
+                            if (threads.Count >= int.Parse(textBox1.Text)) { Thread.Sleep(10); }
                             else
                             {
                                 string thread_name = $"Thread-{i}";
