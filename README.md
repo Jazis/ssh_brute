@@ -8,4 +8,9 @@
 [Ready program download](https://github.com/Jazis/ssh_brute/raw/master/Release.zip)
 
 
-![alt text](https://i.imgur.com/TJbpCM9.png)
+![alt text](https://i.imgur.com/gZSz9Py.png)
+
+
+update 14.11.20
+- Error log
+
