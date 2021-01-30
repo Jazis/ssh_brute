@@ -126,7 +126,7 @@ namespace ssh_brute
                                 string combo = ips_lines[i] + "|" + logins_lines[j] + ":" + passwds_lines[k];
                                 using (StreamWriter sw = File.AppendText("out.txt"))
                                 {
-                                    sw.WriteLine(combo);
+                                    sw.Write(combo + "\n");
                                     counter++;
                                     if (counter % 10000 == 0)
                                     {
@@ -139,7 +139,7 @@ namespace ssh_brute
                                 string combo = ips_lines[i] + ":22|" + logins_lines[j] + ":" + passwds_lines[k];
                                 using (StreamWriter sw = File.AppendText("out.txt"))
                                 {
-                                    sw.WriteLine(combo);
+                                    sw.Write(combo + "\n");
                                     counter++;
                                     if (counter % 10000 == 0)
                                     {
@@ -164,7 +164,7 @@ namespace ssh_brute
                             string combo = textBox2.Text + "|" + logins_lines[j] + ":" + textBox1.Text;
                             using (StreamWriter sw = File.AppendText("out.txt"))
                             {
-                                sw.WriteLine(combo);
+                                sw.Write(combo + "\n");
                                 counter++;
                                 if (counter % 10000 == 0)
                                 {
@@ -177,7 +177,7 @@ namespace ssh_brute
                             string combo = textBox2.Text + ":22|" + logins_lines[j] + ":" + passwds_lines[k];
                             using (StreamWriter sw = File.AppendText("out.txt"))
                             {
-                                sw.WriteLine(combo);
+                                sw.Write(combo + "\n");
                                 counter++;
                                 if (counter % 10000 == 0)
                                 {
@@ -198,7 +198,7 @@ namespace ssh_brute
                         string combo = textBox2.Text + "|" + textBox1.Text + ":" + passwds_lines[k];
                         using (StreamWriter sw = File.AppendText("out.txt"))
                         {
-                            sw.WriteLine(combo);
+                            sw.Write(combo + "\n");
                             counter++;
                             if (counter % 10000 == 0)
                             {
@@ -211,7 +211,7 @@ namespace ssh_brute
                         string combo = textBox2.Text + ":22|" + textBox1.Text + ":" + passwds_lines[k];
                         using (StreamWriter sw = File.AppendText("out.txt"))
                         {
-                            sw.WriteLine(combo);
+                            sw.Write(combo + "\n");
                             counter++;
                             if (counter % 10000 == 0)
                             {
@@ -233,7 +233,7 @@ namespace ssh_brute
                             string combo = ips_lines[i] + "|" + textBox1.Text + ":" + passwds_lines[k];
                             using (StreamWriter sw = File.AppendText("out.txt"))
                             {
-                                sw.WriteLine(combo);
+                                sw.Write(combo + "\n");
                                 counter++;
                                 if (counter % 10000 == 0)
                                 {
@@ -246,7 +246,7 @@ namespace ssh_brute
                             string combo = ips_lines[i] + ":22|" + textBox1.Text + ":" + passwds_lines[k];
                             using (StreamWriter sw = File.AppendText("out.txt"))
                             {
-                                sw.WriteLine(combo);
+                                sw.Write(combo + "\n");
                                 counter++;
                                 if (counter % 10000 == 0)
                                 {
@@ -267,7 +267,7 @@ namespace ssh_brute
                         string combo = textBox2.Text + "|" + logins_lines[j] + ":" + textBox1.Text;
                         using (StreamWriter sw = File.AppendText("out.txt"))
                         {
-                            sw.WriteLine(combo);
+                            sw.Write(combo + "\n");
                             counter++;
                             if (counter % 10000 == 0)
                             {
@@ -280,7 +280,7 @@ namespace ssh_brute
                         string combo = textBox2.Text + ":22|" + logins_lines[j] + ":" + textBox1.Text;
                         using (StreamWriter sw = File.AppendText("out.txt"))
                         {
-                            sw.WriteLine(combo);
+                            sw.Write(combo + "\n");
                             counter++;
                             if (counter % 10000 == 0)
                             {
@@ -302,7 +302,7 @@ namespace ssh_brute
                             string combo = textBox2.Text + "|" + logins_lines[j] + ":" + passwds_lines[k];
                             using (StreamWriter sw = File.AppendText("out.txt"))
                             {
-                                sw.WriteLine(combo);
+                                sw.Write(combo + "\n");
                                 counter++;
                                 if (counter % 10000 == 0)
                                 {
@@ -315,7 +315,7 @@ namespace ssh_brute
                             string combo = textBox2.Text + ":22|" + logins_lines[j] + ":" + passwds_lines[k];
                             using (StreamWriter sw = File.AppendText("out.txt"))
                             {
-                                sw.WriteLine(combo);
+                                sw.Write(combo + "\n");
                                 counter++;
                                 if (counter % 10000 == 0)
                                 {
@@ -336,7 +336,7 @@ namespace ssh_brute
                         string combo = ips_lines[i] + "|" + textBox1.Text + ":" + textBox1.Text;
                         using (StreamWriter sw = File.AppendText("out.txt"))
                         {
-                            sw.WriteLine(combo);
+                            sw.Write(combo + "\n");
                             counter++;
                             if (counter % 10000 == 0)
                             {
@@ -349,7 +349,7 @@ namespace ssh_brute
                         string combo = ips_lines[i] + ":22|" + textBox1.Text + ":" + textBox1.Text;
                         using (StreamWriter sw = File.AppendText("out.txt"))
                         {
-                            sw.WriteLine(combo);
+                            sw.Write(combo + "\n");
                             counter++;
                             if (counter % 10000 == 0)
                             {
@@ -371,7 +371,7 @@ namespace ssh_brute
                             string combo = ips_lines[i] + "|" + logins_lines[j] + ":" + textBox1.Text;
                             using (StreamWriter sw = File.AppendText("out.txt"))
                             {
-                                sw.WriteLine(combo);
+                                sw.Write(combo + "\n");
                                 counter++;
                                 if (counter % 10000 == 0)
                                 {
@@ -384,7 +384,7 @@ namespace ssh_brute
                             string combo = ips_lines[i] + ":22|" + logins_lines[j] + ":" + textBox1.Text;
                             using (StreamWriter sw = File.AppendText("out.txt"))
                             {
-                                sw.WriteLine(combo);
+                                sw.Write(combo + "\n");
                                 counter++;
                                 if (counter % 10000 == 0)
                                 {
@@ -456,7 +456,7 @@ namespace ssh_brute
                                 label4.Invoke((MethodInvoker)(() => label4.Text = $"Goods: {goods}"));
                                 using (StreamWriter sw = new StreamWriter("Goods.txt"))
                                 {
-                                    sw.WriteLine(combos_line);
+                                    sw.Write(combos_line + "\n");
                                 }
                             }
                             else
