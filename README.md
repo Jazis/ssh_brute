@@ -19,3 +19,6 @@ update 14.11.20
 - generate by one login (Put your login in textbox1)
 - generate by one password (Put your password in textbox2)
 - generate by one ip (Put your ip in textbox3)
+
+update 29.01.21
+ - save fix
